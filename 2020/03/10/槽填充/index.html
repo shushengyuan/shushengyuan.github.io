@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>槽填充 | Yuanyun</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="撰写本文的原因是作为(伪)机器翻译领域的学生，需要查阅一些NLU的资料。 发现google到的文章上来就教你槽填充的方法，让人摸不着头脑。 所以在此做一个总结,同时也作为和老师讨论的资料。 ​     ​     定义定义1 One way of making sense of a piece of text is to tag the words or tokens which carry me">
+<meta property="og:type" content="article">
+<meta property="og:title" content="槽填充">
+<meta property="og:url" content="http://yoursite.com/2020/03/10/%E6%A7%BD%E5%A1%AB%E5%85%85/index.html">
+<meta property="og:site_name" content="Yuanyun">
+<meta property="og:description" content="撰写本文的原因是作为(伪)机器翻译领域的学生，需要查阅一些NLU的资料。 发现google到的文章上来就教你槽填充的方法，让人摸不着头脑。 所以在此做一个总结,同时也作为和老师讨论的资料。 ​     ​     定义定义1 One way of making sense of a piece of text is to tag the words or tokens which carry me">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://pic1.zhimg.com/80/v2-3b76a1a0e0440d95d0241169644081b4_720w.jpg">
+<meta property="article:published_time" content="2020-03-10T14:03:29.000Z">
+<meta property="article:modified_time" content="2020-03-10T14:25:19.235Z">
+<meta property="article:author" content="Yuan Haoyang">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="NLU">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic1.zhimg.com/80/v2-3b76a1a0e0440d95d0241169644081b4_720w.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="Yuanyun" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Yuanyun</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-槽填充" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/10/%E6%A7%BD%E5%A1%AB%E5%85%85/" class="article-date">
+  <time datetime="2020-03-10T14:03:29.000Z" itemprop="datePublished">2020-03-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      槽填充
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>撰写本文的原因是作为(伪)机器翻译领域的学生，需要查阅一些NLU的资料。</p>
+<p>发现google到的文章上来就教你槽填充的方法，让人摸不着头脑。</p>
+<p>所以在此做一个总结,同时也作为和老师讨论的资料。</p>
+<p>​    </p>
+<p>​    </p>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><h4 id="定义1"><a href="#定义1" class="headerlink" title="定义1"></a><strong>定义1</strong></h4><blockquote>
+<p>One way of making sense of a piece of text is to tag the words or tokens which carry meaning to the sentences. In the field of Natural Language Processing, this problem is known as <strong>Semantic Slot Filling</strong>.——<a href="https://link.zhihu.com/?target=https%3A//mc.ai/semantic-slot-filling-part-1/">mc.ai</a></p>
+</blockquote>
+<p>理解一段文字的一种方法是标记那些对句子有意义的单词或记号。在自然语言处理领域，这个问题被称为语义槽填充。</p>
+<p>以上的定义基本上只告诉了我们语义槽是针对句子里面某些单词做标记，而我们对于这样做的目的仍然一无所知。  </p>
+<p>​    </p>
+<h4 id="定义2"><a href="#定义2" class="headerlink" title="定义2"></a><strong>定义2</strong></h4><blockquote>
+<p>填槽的专业表述：从大规模的语料库中抽取给定实体（query）的被明确定义的属性（slot types）的值（slot fillers）——网络文章定义</p>
+</blockquote>
+<p>这个定义补充了槽填充是针对这个词的某些属性做标记。  </p>
+<p>​    </p>
+<h4 id="定义3"><a href="#定义3" class="headerlink" title="定义3"></a><strong>定义3</strong></h4><blockquote>
+<p>填槽指的是为了让用户意图转化为用户明确的指令而补全信息的过程。</p>
+</blockquote>
+<p>这个定义提示了槽填充的作用 -&gt; 将用户隐式的意图转化为显式的指令从而让计算机理解。  </p>
+<p>​    </p>
+<p>​    </p>
+<h2 id="用途-意义"><a href="#用途-意义" class="headerlink" title="用途/意义"></a>用途/意义</h2><p>1.多用于任务型对话。</p>
+<blockquote>
+<p>任务型对话系统的语言理解部分，通常使用语义槽来表示用户的需求，如出发地、到达地、出发时间等信息。</p>
+</blockquote>
+<p>2.作为意图识别的关键字</p>
+<p>3.作为下一步对话的提示信息</p>
+<blockquote>
+<p>填槽的意义有两个：<strong>作条件分支多轮对话</strong>、<strong>作信息补全用户意图</strong>。<br>换言之，填槽不仅是补全用户意图的方式，而且前序槽位的填写还会起到指导后续信息补全走向的作用。</p>
+</blockquote>
+<p>​    </p>
+<h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>虽然 意义和目的有时候的区别不大，我这里还是把目的看成意义的进一步加深。</p>
+<p>可以理解成用途/意义的根本还是围绕<strong>槽填充的目的</strong>，而槽填充的目的可以引申出各种各样的用途和意义。</p>
+<p>既然槽填充属于NLU的任务之一，那么我们首先要了解NLU的目的。</p>
+<blockquote>
+<p>自然语言理解(NLU)就是要获得一个计算机能<strong>直接使用的语义表示 ——</strong><a href="https://zhuanlan.zhihu.com/p/50347509" target="_blank" rel="noopener">总结|对话系统中的口语理解技术(SLU)（二）</a></p>
+</blockquote>
+<p>NLU（Natural Language Understanding）自然语言理解希望机器像人一样，具备正常人的语言理解能力即需要知道人的意图。</p>
+<p>意图从何而来呢?一个计算机能用的语义表示。</p>
+<blockquote>
+<p><strong>机器理解人类 -&gt; 提取人类意图 -&gt; 语义表示</strong></p>
+</blockquote>
+<p>而槽填充的目的和NLU是一致的，它为机器提供一个规范的语义表示</p>
+<p>—— <strong>Frame semantics</strong></p>
+<p>​    </p>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><ul>
+<li>帮我订张机票，从杭州出发。</li>
+</ul>
+<p>这里就应该填充了两个槽，把『机票』、『杭州』填入名为『交通工具』、『目的地』。</p>
+<p>那么在对话系统钟就可以让reboot理解用户是想要买一张去往杭州的机票，由于缺少出发地点，可能还会有一轮询问的对话。</p>
+<p>最后reboot根据补充的信息，生成指令，调用接口购买从xx去往杭州的机票。</p>
+<p>​    </p>
+<h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><p>简单谈一谈近年来的方法有哪些。</p>
+<p><strong><em>经典方法</em></strong></p>
+<p>CRF: 条件随机场。通过设置各种特征函数来给序列打分。——<a href="https://www.zhihu.com/question/35866596/answer/139485548" target="_blank" rel="noopener">（CRF）</a></p>
+<p><strong><em>深度方法</em></strong></p>
+<p><strong>*一</strong>、*RNN 槽填充</p>
+<p>二、RNN Encoder-Decoder 槽填充</p>
+<p>三、Bi-GRU + CRF</p>
+<p>——A Joint Model of Intent Determination and Slot Filling for Spoken Language</p>
+<p>四、<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1609.01454">Attention-Based Recurrent Neural Network Models for Joint Intent Detection and Slot Filling</a> (比较经典，论文是意图识别和槽填充共同训练）</p>
+<p>加入了对齐信息和attention</p>
+<p><img src="https://pic1.zhimg.com/80/v2-3b76a1a0e0440d95d0241169644081b4_720w.jpg" alt="img">三种情况 ：图a没有使用对齐输入hi，但是用了注意力ci。图b没有使用注意力ci,但是用了对齐输入hi。图c既使用注意力ci,也用了对齐输入hi。</p>
+<p>五、最近的paper 待更新。</p>
+<p>​    </p>
+<p>​    </p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p><strong><em>对 BIO的解释</em></strong></p>
+<p>“B-X”表示此元素所在的片段属于X类型并且此元素在此片段的开头。</p>
+<p>“I-X”表示此元素所在的片段属于X类型并且此元素在此片段的中间位置。</p>
+<p>“O”表示不属于任何类型。</p>
+<p>​    </p>
+<p>​    </p>
+<p>​    </p>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2020/03/10/%E6%A7%BD%E5%A1%AB%E5%85%85/" data-id="ck7lzdhd100006sw6avtac883" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLP/" rel="tag">NLP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NLU/" rel="tag">NLU</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLU/" rel="tag">NLU</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/NLP/" style="font-size: 10px;">NLP</a> <a href="/tags/NLU/" style="font-size: 10px;">NLU</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/10/%E6%A7%BD%E5%A1%AB%E5%85%85/">槽填充</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Yuan Haoyang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
