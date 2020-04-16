@@ -80,7 +80,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Word2vec,NLP,词嵌入," />
+  <meta name="keywords" content="NLP,词嵌入,词向量,word2vec," />
 
 
 
@@ -96,23 +96,24 @@
 
 
 
-<meta name="description" content="1 什么是word2vec顾名思义，就是把word表示成vector的形式。 我们考虑一个问题。日常生活中，我们所用到的词语，是一种抽象的，符号化的东西。但是我们怎么能让二进制计算机理解这样符号化的词语? 一开始我们是这样做的。每一个词，用一个向量表示。区分词与词不同的关键在于，不同的词只在不同的维数有表示，这个表示是1。而在其他维，都是0。那么我们需要输入n个单词，只要建立n个n维的向量就好了。">
+<meta name="description" content="一、什么是Word2vec?顾名思义，就是把word表示成vector的形式。  维基百科中介绍: Word2vec，为一群用来产生词向量的相关模型。这些模型为浅层双层的神经网络，用来训练以重新建构语言学之词文本。网络以词表现，并且需猜测相邻位置的输入词，在word2vec中词袋模型假设下，词的顺序是不重要的。  二、为什么需要Word2vec?让我们来考虑一个问题： 日常生活中，我们所用到的词语">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Word2vec">
+<meta property="og:title" content="Word2vec 的介绍及实现">
 <meta property="og:url" content="http://yoursite.com/2020/03/20/Word2vec/index.html">
 <meta property="og:site_name" content="Yuanyun">
-<meta property="og:description" content="1 什么是word2vec顾名思义，就是把word表示成vector的形式。 我们考虑一个问题。日常生活中，我们所用到的词语，是一种抽象的，符号化的东西。但是我们怎么能让二进制计算机理解这样符号化的词语? 一开始我们是这样做的。每一个词，用一个向量表示。区分词与词不同的关键在于，不同的词只在不同的维数有表示，这个表示是1。而在其他维，都是0。那么我们需要输入n个单词，只要建立n个n维的向量就好了。">
+<meta property="og:description" content="一、什么是Word2vec?顾名思义，就是把word表示成vector的形式。  维基百科中介绍: Word2vec，为一群用来产生词向量的相关模型。这些模型为浅层双层的神经网络，用来训练以重新建构语言学之词文本。网络以词表现，并且需猜测相邻位置的输入词，在word2vec中词袋模型假设下，词的顺序是不重要的。  二、为什么需要Word2vec?让我们来考虑一个问题： 日常生活中，我们所用到的词语">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/2020/03/20/Word2vec/%5Cimages%5Cskip.png">
-<meta property="og:image" content="http://yoursite.com/2020/03/20/Word2vec/%5Cimages%5Ccbow.png">
-<meta property="article:published_time" content="2020-03-20T11:40:59.000Z">
-<meta property="article:modified_time" content="2020-03-20T11:57:31.526Z">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-56fe860f332b91f81338fce96cd3dc51_b.png">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-95e17aa89cf55e721424a49061ee1a2b_b.png">
+<meta property="article:published_time" content="2020-03-20T14:03:29.000Z">
+<meta property="article:modified_time" content="2020-04-16T09:43:40.175Z">
 <meta property="article:author" content="Yuan Haoyang">
-<meta property="article:tag" content="Word2vec">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="词嵌入">
+<meta property="article:tag" content="词向量">
+<meta property="article:tag" content="word2vec">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/2020/03/20/Word2vec/%5Cimages%5Cskip.png">
+<meta name="twitter:image" content="https://pic2.zhimg.com/v2-56fe860f332b91f81338fce96cd3dc51_b.png">
 
 
 
@@ -147,7 +148,7 @@
 
 
 
-  <title>Word2vec | Yuanyun</title>
+  <title>Word2vec 的介绍及实现 | Yuanyun</title>
   
 
 
@@ -287,7 +288,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Word2vec</h1>
+          <h1 class="post-title" itemprop="name headline">Word2vec 的介绍及实现</h1>
         
 
         <div class="post-meta">
@@ -299,7 +300,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-20T19:40:59+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-20T22:03:29+08:00">
                 2020-03-20
               </time>
             
@@ -337,71 +338,76 @@
       
 
       
-        <h2 id="1-什么是word2vec"><a href="#1-什么是word2vec" class="headerlink" title="1 什么是word2vec"></a>1 什么是word2vec</h2><p>顾名思义，就是把word表示成vector的形式。</p>
-<p>我们考虑一个问题。日常生活中，我们所用到的词语，是一种抽象的，符号化的东西。但是我们怎么能让二进制计算机理解这样符号化的词语?</p>
-<p>一开始我们是这样做的。每一个词，用一个向量表示。区分词与词不同的关键在于，不同的词只在不同的维数有表示，这个表示是1。而在其他维，都是0。那么我们需要输入n个单词，只要建立n个n维的向量就好了。</p>
-<p>比如 I love Natural Language Processing.我们就把  I  用[1,0,0,0,0]表示，love 用 [0,1,0,0,0]表示。</p>
-<p>我们把这样的向量叫做 <strong>one-hot vector</strong>,也叫独热向量。</p>
-<p>通过独热向量的介绍，我们可以看到用数值来表达符号具有离散化的特点。</p>
+        <h2 id="一、什么是Word2vec"><a href="#一、什么是Word2vec" class="headerlink" title="一、什么是Word2vec?"></a><strong>一、</strong>什么是Word2vec?</h2><p>顾名思义，就是把word表示成vector的形式。</p>
 <blockquote>
-<p><strong>在<a href="https://zh.wikipedia.org/wiki/自然語言處理" target="_blank" rel="noopener">自然语言处理</a>中，若有个字典或字库里有N个单字，则每个单字可以被一个N维的one-hot向量代表。</strong></p>
+<p><strong>维基百科中介绍: Word2vec</strong>，为一群用来产生<a href="https://zh.wikipedia.org/wiki/词嵌入" target="_blank" rel="noopener">词向量</a>的相关模型。这些模型为浅层双层的<a href="https://zh.wikipedia.org/wiki/神經網絡" target="_blank" rel="noopener">神经网络</a>，用来训练以重新建构语言学之词文本。网络以词表现，并且需猜测相邻位置的输入词，在word2vec中<a href="https://zh.wikipedia.org/wiki/词袋模型" target="_blank" rel="noopener">词袋模型</a>假设下，词的顺序是不重要的。</p>
 </blockquote>
-<hr>
-<p>​    </p>
-<p>One-hot vector虽然简单，但是有很多的缺点。</p>
-<p>最明显的缺点就是，如果我们需要的字库非常大，词汇非常多的情况下，向量的维数会变得非常大。想象一万个词汇需要一万个一万维的向量表达。——这过于浪费了。</p>
-<p>其次一个更关键的点，也是我们引出word2vec的点：词汇与词汇之间的语义不能通过独热向量得到充分的表达。</p>
-<p>简而言之，这就是n个标签，标签与标签之间没有任何的关联，同时标签也不能明确的表达含义——它们只是能简单的区别彼此的不同。</p>
+<h2 id="二、为什么需要Word2vec"><a href="#二、为什么需要Word2vec" class="headerlink" title="二、为什么需要Word2vec?"></a>二、为什么需要Word2vec?</h2><p>让我们来考虑一个问题：</p>
+<p>日常生活中，我们所用到的词语，是一种抽象的，符号化的东西。但是我们怎么能让二进制计算机理解这样符号化的词语?</p>
+<h3 id="2-1-one-hot"><a href="#2-1-one-hot" class="headerlink" title="2.1 one-hot"></a>2.1 one-hot</h3><p>一开始我们是这样做的：我们把每一个词，用一个向量表示。</p>
+<p>假设我们需要输入n个单词，只要建立n个n维的向量。并且使得不同的词只在不同的维数有所表示，即把该维设为1，并且将其他维设为0。</p>
+<blockquote>
+<p>比如 “I love Natural Language Processing“ 把这句话看成一个容量为5的字库，每一个单字都用一个5维的one-hot向量表示。 如把  I  用[1,0,0,0,0]表示，love 用 [0,1,0,0,0]表示</p>
+</blockquote>
+<p>我们把这样的向量叫做 <strong>one-hot vector</strong>,也叫独热向量。</p>
+<h3 id="2-2-one-hot缺点"><a href="#2-2-one-hot缺点" class="headerlink" title="2.2 one-hot缺点"></a>2.2 one-hot缺点</h3><p>One-hot vector虽然简单，但是有很多的缺点。</p>
+<p>最明显的缺点就是，如果我们需要的字库非常大，词汇非常多的情况下，向量的维数会变得非常大。</p>
+<p>想象一万个词汇需要一万个一万维的向量表达。——这过于浪费了。</p>
+<p>接着一个更关键的点，也是我们引出word2vec的点：<strong>词汇与词汇之间的语义不能通过独热向量得到充分的表达</strong>。</p>
+<p>简而言之，通过one-hot方法得到的n个单字的向量，它们仅仅是n个标签，标签与标签之间没有任何的关联，同时标签也不能明确的表达含义——它们只是能简单的区别彼此的不同。</p>
 <p>因此我们需要一个更好的模型，来表示words。</p>
 <p>它就是Word2vec。</p>
+<h2 id="三、怎么得到Word2vec"><a href="#三、怎么得到Word2vec" class="headerlink" title="三、怎么得到Word2vec?"></a>三、怎么得到Word2vec?</h2><h3 id="3-1-具体介绍"><a href="#3-1-具体介绍" class="headerlink" title="3.1 具体介绍"></a>3.1 具体介绍</h3><p>基于one-hot方法的缺点，我们理想中的方法应该是这样的：</p>
 <blockquote>
-<p><strong>Word2vec</strong>，为一群用来产生<a href="https://zh.wikipedia.org/wiki/词嵌入" target="_blank" rel="noopener">词向量</a>的相关模型。这些模型为浅层双层的<a href="https://zh.wikipedia.org/wiki/神經網絡" target="_blank" rel="noopener">神经网络</a>，用来训练以重新建构语言学之词文本。网络以词表现，并且需猜测相邻位置的输入词，在word2vec中<a href="https://zh.wikipedia.org/wiki/词袋模型" target="_blank" rel="noopener">词袋模型</a>假设下，词的顺序是不重要的。</p>
+<p><strong>首先这个方法能压缩向量的维度，其次能让词向量隐式地表达出单词的词意。</strong></p>
 </blockquote>
-<p>​    </p>
-<hr>
-<p>​    </p>
-<p>了解Word2vec，我们要知道什么是分布相似性。</p>
+<p>基于这个“理想”或者说认识，我们首先要知道什么是<strong>分布相似性</strong>。</p>
 <blockquote>
 <p>分布相似性是指我们通过观察某个词汇的上下文，并对这些上下文做出一些处理就能得到大量表示某个词汇含义的值。——cs224n</p>
 </blockquote>
 <p>通俗一点说，我们要想办法从一个单词的上下文中得到这个单词含义，并数值化表达。</p>
-<p>这里有两个语言模型来实现这个想法：</p>
+<p>这里有两个语言模型来实现这个分布相似性：</p>
 <ul>
 <li>Skip-gram</li>
 <li>CBOW</li>
 </ul>
-<p>输入一个词语，预测其上下文的概率分布的模型，叫做Skip-gram。</p>
-<p>输入一个词语的上下文，预测这个词语本身的概率分布的模型，叫做CBOW。</p>
-<p>​    </p>
-<h2 id="2-Skip-gram-和-CBOW"><a href="#2-Skip-gram-和-CBOW" class="headerlink" title="2. Skip-gram 和 CBOW"></a>2. Skip-gram 和 CBOW</h2><h3 id="2-1-Skip-gram"><a href="#2-1-Skip-gram" class="headerlink" title="2.1 Skip-gram"></a>2.1 Skip-gram</h3><p>一个一般的Skip-gram模型如图。</p>
-<p><img src="%5Cimages%5Cskip.png" alt=""></p>
+<h3 id="3-2-Skip-gram-和-CBOW"><a href="#3-2-Skip-gram-和-CBOW" class="headerlink" title="3.2  Skip-gram 和 CBOW"></a><strong>3.2  Skip-gram 和 CBOW</strong></h3><blockquote>
+<p>输入一个词语，预测其上下文的概率分布的模型，叫做<strong>Skip-gram</strong>。  输入一个词语的上下文，预测这个词语本身的概率分布的模型，叫做<strong>CBOW</strong>。</p>
+</blockquote>
+<h3 id="3-2-1-Skip-gram"><a href="#3-2-1-Skip-gram" class="headerlink" title="3.2.1 Skip-gram"></a><strong>3.2.1 Skip-gram</strong></h3><p>一个一般的Skip-gram模型如图。</p>
+<p><img src="https://pic2.zhimg.com/v2-56fe860f332b91f81338fce96cd3dc51_b.png" alt="img"></p>
 <p>图中input为w(t)，即某个词语的one-hot vector。初始化的时候我们仍然需要one-hot vector作为输入输出，以作为单词和单词之间的区分。</p>
-<p>output为[w[t-2],w[t+2]]的向量表示。这里的2是一个超参数，表示的是需要预测上下文的范围，通常叫做“窗口”。</p>
-<p>​    </p>
-<p>问题的核心在于隐藏层。</p>
+<p>output为[w[t-2],w[t+2]]的向量表示。这里的2是一个超参数，表示的是需要预测上下文的范围，通常叫做“<strong>窗口</strong>”。</p>
+<p>问题的<strong>核心</strong>在于隐藏层。</p>
 <p>模型中，输入的独热向量通过一个隐藏层，输出为四个向量。每个向量通过softmax，将数值转化为概率。通过预测上下文词语的概率进行训练。最后训练完成时，我们需要的其实是隐藏层的权重。</p>
-<p>这一点类似于自编码器模型，最后需要的都是矩阵权重。</p>
-<p>这里我们把隐藏层的矩阵权重作为单词最终的向量。</p>
-<p>​    </p>
-<p><strong>一些令人疑惑的地方：</strong></p>
-<p>我们看到隐藏层到输出层的权重矩阵其实只有一个，有的同学会觉得这样会导致四个输出的向量一样。</p>
-<p>这种想法是正确的，四个输出的向量一样，但不代表我们要把四个输出都训练为1。</p>
-<p>举个例子： i am yuan.</p>
-<p>取中心词为am。此时w[t-1]应该为i，w[t+1]应该为yuan。我们的原始输入为两个pair:</p>
-<p><i am>和<am yuan>。</p>
-<p>第一次我们输入<i am>，训练的目的是把w[t-1]的输出与 i 的one-hot向量尽量相似，而w[t-1]则与 i 的one-hot向量尽量不同。</p>
-<p>（假设i的one-hot vector为[1,0,0],w[t-1]的第一维应该训练为1，w[t+1]的第一维应该避免训练为1，即与之相反的0）</p>
-<p>具体的推导过程可以参考：Xin Rong 的论文：『word2vec Parameter Learning Explained』</p>
-<p>​    </p>
-<h3 id="2-2-CBOW"><a href="#2-2-CBOW" class="headerlink" title="2.2 CBOW"></a>2.2 CBOW</h3><p><img src="%5Cimages%5Ccbow.png" alt=""></p>
+<p>这一点类似于自编码器模型，最后需要的都是矩阵权重。这里我们把隐藏层的矩阵权重作为单词最终的向量。</p>
+<h3 id="3-2-2-CBOW"><a href="#3-2-2-CBOW" class="headerlink" title="3.2.2 CBOW"></a><strong>3.2.2 CBOW</strong></h3><p><img src="https://pic4.zhimg.com/v2-95e17aa89cf55e721424a49061ee1a2b_b.png" alt="img"></p>
 <p>可以看到CBOW与skip-gram的不同就在于它是通过上下文的单词来预测中心单词。</p>
-<p>在此不具体展开。</p>
+<p>其实通过Skip-gram就可以类比得到具体的解释可以参考：</p>
 <p>​    </p>
-<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3 总结"></a>3 总结</h2><p>我们可以看到，表示一个词语可以直接通过数值化的方式表达出来，这种方法通常叫做词嵌入。</p>
+<p><strong><em>Xin Rong 的论文：『word2vec Parameter Learning Explained』</em></strong></p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a><strong>四、总结</strong></h2><h3 id="4-1-回顾"><a href="#4-1-回顾" class="headerlink" title="4.1  回顾"></a><strong>4.1  回顾</strong></h3><p><strong>在 ”三、怎么得到Word2vec? “</strong> 中，提到了我们理想中的方法应该具有的两个特点：</p>
+<blockquote>
+<p><em>低维</em> <em>能包含单词的词意</em></p>
+</blockquote>
+<p>我们可以看到Word2vec的两个基本模型（Skip-gram 和 Cbow）通过分布相似性可以说是部分包含了单词的词意。而最终得到的维数，其实就是隐藏层的维数。这个维数是超参数，也就是说我们可以自己调节希望能表达单词的维数大小，而不必囿于输入单词的数量。</p>
+<p>这样来分析 Word2vec基本上是一个比较合理、比较好的词嵌入方法。</p>
+<h3 id="4-2-一些可能疑惑的地方"><a href="#4-2-一些可能疑惑的地方" class="headerlink" title="4.2  一些可能疑惑的地方"></a><strong>4.2  一些可能疑惑的地方</strong></h3><p><strong>Skip-gram中：</strong></p>
+<p>我们看到隐藏层到输出层的权重矩阵其实只有一个，有的同学会觉得这样会导致四个输出的向量一样。</p>
+<p>这种想法是不正确的，四个输出的向量一样，但不代表我们要把四个输出都训练为1。</p>
+<blockquote>
+<p>举个例子：we are NLPers. </p>
+<p>取中心词为are。此时w[t-1]应该为 we，w[t+1]应该为NLPers。 </p>
+<p>那么我们的原始输入为两个pair:<we are>和<are NLPers>。 </p>
+<p>我们首先输入<we are>，训练的目的是把w[t-1]的输出与 i 的one-hot向量尽量相似，而让     w[t-1] 与 i 的one-hot向量不同。 </p>
+<p>​    （假设i的one-hot vector为 [1,0,0] , w[t-1]的第一维应该训练为1，w[t+1]的第一维应该 避免训练为1，即与之相反的0）</p>
+</blockquote>
+<p>这样就解释了输出为什么会不一样的问题。</p>
+<p>具体的推导过程可以参考：</p>
+<p><strong>Xin Rong 的论文：『word2vec Parameter Learning Explained』</strong></p>
+<p>​        </p>
+<h3 id="4-3-拓展"><a href="#4-3-拓展" class="headerlink" title="4.3  拓展"></a><strong>4.3  拓展</strong></h3><p>我们可以看到，表示一个词语可以直接通过数值化的方式表达出来，这种方法通常叫做词嵌入。</p>
 <p>词嵌入模型是NLP中所有深度模型的基础。无论是机器翻译之类的生成模型，或者是判别模型，都需要词嵌入的方法得到词语的数值化表达。</p>
-<p>​    </p>
-<p>​    </p>
-<p>​    </p>
 
       
     </div>
@@ -419,11 +425,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Word2vec/" rel="tag"># Word2vec</a>
-          
             <a href="/tags/NLP/" rel="tag"># NLP</a>
           
             <a href="/tags/%E8%AF%8D%E5%B5%8C%E5%85%A5/" rel="tag"># 词嵌入</a>
+          
+            <a href="/tags/%E8%AF%8D%E5%90%91%E9%87%8F/" rel="tag"># 词向量</a>
+          
+            <a href="/tags/word2vec/" rel="tag"># word2vec</a>
           
         </div>
       
@@ -534,7 +542,7 @@
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">tags</span>
               
             </div>
@@ -569,7 +577,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-什么是word2vec"><span class="nav-number">1.</span> <span class="nav-text">1 什么是word2vec</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Skip-gram-和-CBOW"><span class="nav-number">2.</span> <span class="nav-text">2. Skip-gram 和 CBOW</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Skip-gram"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Skip-gram</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-CBOW"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 CBOW</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3 总结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、什么是Word2vec"><span class="nav-number">1.</span> <span class="nav-text">一、什么是Word2vec?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、为什么需要Word2vec"><span class="nav-number">2.</span> <span class="nav-text">二、为什么需要Word2vec?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-one-hot"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 one-hot</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-one-hot缺点"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 one-hot缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、怎么得到Word2vec"><span class="nav-number">3.</span> <span class="nav-text">三、怎么得到Word2vec?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-具体介绍"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 具体介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-Skip-gram-和-CBOW"><span class="nav-number">3.2.</span> <span class="nav-text">3.2  Skip-gram 和 CBOW</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-Skip-gram"><span class="nav-number">3.3.</span> <span class="nav-text">3.2.1 Skip-gram</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-CBOW"><span class="nav-number">3.4.</span> <span class="nav-text">3.2.2 CBOW</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、总结"><span class="nav-number">4.</span> <span class="nav-text">四、总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-回顾"><span class="nav-number">4.1.</span> <span class="nav-text">4.1  回顾</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-一些可能疑惑的地方"><span class="nav-number">4.2.</span> <span class="nav-text">4.2  一些可能疑惑的地方</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-拓展"><span class="nav-number">4.3.</span> <span class="nav-text">4.3  拓展</span></a></li></ol></li></ol></div>
             
 
           </div>
