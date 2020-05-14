@@ -111,8 +111,9 @@
 <meta property="og:image" content="https://pic1.zhimg.com/v2-fcabf6239eb3467cc997687df4fd3794_b.png">
 <meta property="og:image" content="https://pic1.zhimg.com/v2-1fa66599f8c89a40db8fa5f0040d6220_b.png">
 <meta property="og:image" content="https://pic4.zhimg.com/v2-1c2c9c0be3e27cdabf9b683ed07c23d3_b.png">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-6075ced3b1c4a37345b9fc7fbe7bdd06_b.png">
 <meta property="article:published_time" content="2020-05-13T09:32:22.000Z">
-<meta property="article:modified_time" content="2020-05-14T07:26:25.220Z">
+<meta property="article:modified_time" content="2020-05-14T07:29:56.528Z">
 <meta property="article:author" content="Yuan Haoyang">
 <meta property="article:tag" content="NLP">
 <meta property="article:tag" content="机器翻译">
@@ -352,10 +353,6 @@
 <p>Which  is the best digital marketing training institute in Pune ?<br>Which is the important institute for digital training in Pune ?</p>
 </blockquote>
 <p><img src="https://pic4.zhimg.com/v2-40447707273597bb1078123e3c69182f_b.png" alt="2020-05-14 00-57-36 的屏幕截图"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% asset_img C:\Users\yhy\Pictures\1.jpg This is an image %&#125;</span><br></pre></td></tr></table></figure>
-
-
-
 <h3 id="三、七种平滑方法的介绍"><a href="#三、七种平滑方法的介绍" class="headerlink" title="三、七种平滑方法的介绍"></a>三、七种平滑方法的介绍</h3><h4 id="1-Smoothing-1"><a href="#1-Smoothing-1" class="headerlink" title="1. Smoothing 1"></a>1. Smoothing 1</h4><p>​        如果某个n-grams分数为0，用一个较小的整数代替这个0.</p>
 <p>​                                                    <img src="https://pic2.zhimg.com/v2-3e9a6d3c8b31d8ab762679aa0eecb15d_b.png" alt="image-20200514002302365"></p>
 <h4 id="2-Smoothing-2"><a href="#2-Smoothing-2" class="headerlink" title="2. Smoothing 2"></a>2. Smoothing 2</h4><p>​        对分子和分母同时加1</p>
@@ -370,7 +367,8 @@
 <p>​        不过也是在分子和分母上面做文章，见下图：</p>
 <p>​                                                    <img src="https://pic1.zhimg.com/v2-1fa66599f8c89a40db8fa5f0040d6220_b.png" alt="image-20200514002521739"></p>
 <p>​                                                    <img src="https://pic4.zhimg.com/v2-1c2c9c0be3e27cdabf9b683ed07c23d3_b.png" alt="image-20200514002533744"></p>
-<p>​        可以知道分子分母都要加上参数 ：<br>$$<br>其中\alpha 是一个由经验决定的参数，p_n^0表示一种先验估计，由p_{n-1}和p_{n-2}决定<br>$$</p>
+<p>​        可以知道分子分母都要加上参数 ：</p>
+<p><img src="https://pic3.zhimg.com/v2-6075ced3b1c4a37345b9fc7fbe7bdd06_b.png" alt=""></p>
 <h4 id="7-Smoothing-7"><a href="#7-Smoothing-7" class="headerlink" title="7. Smoothing 7"></a>7. Smoothing 7</h4><p>​        先经过方法4光滑再通过方法5光滑即可。</p>
 <h3 id="四、一些Tips"><a href="#四、一些Tips" class="headerlink" title="四、一些Tips"></a>四、一些Tips</h3><p>​        一般来说，paper不会直接告诉用的是哪种smooth方法，至少我看的那篇论文没有提及。</p>
 <p>​    估计是因为大家用的都是默认的第七种方法。</p>
